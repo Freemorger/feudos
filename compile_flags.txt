@@ -1,0 +1,4 @@
+-xc
+-ffreestanding
+-std=gnu23
+-Iinclude

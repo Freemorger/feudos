@@ -1,0 +1,2 @@
+- debug and release build
+- gdt, idt
