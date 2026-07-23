@@ -133,7 +133,7 @@ enable_paging:
     mov eax, p4_table
     mov cr3, eax
 
-    ; Enable PAE (required for long mode)
+    ; Enable PAE 
     mov eax, cr4
     or eax, 1 << 5
     mov cr4, eax

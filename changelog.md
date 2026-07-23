@@ -1,8 +1,8 @@
-v0.0.2:
-- fixed gdt
-- changed `const char dtoa(char digit)` to `char dtoa(char digit)`
-- updated `kprintf`:
-    - fixed minus bug for `INT_MIN`
-    - fixed `\%`
-    - new specifiers supported: `%ld` `%lu` `%X`
-- IDT
+v0.0.3:
+- updated initial boot up message
+- some PIC
+- `%c` fmt specifiers for `kprintf`
+- IRQs for keyboard and timer
+- basic keyboard handling
+- somewhat supporting `\b` in `vga_putc` now
+- VGA hardware cursor is now somewhat movable

@@ -1,6 +1,11 @@
 #include "arch/x86_64/idt.h"
+#include "arch/x86_64/io.h"
+#include "arch/x86_64/pic.h"
 #include "kernel/kernel.h"
+#include "kernel/timer.h"
 #include "kernel/vga.h"
+#include "kernel/keyboard.h"
+#include <stdint.h>
 
 volatile struct idt_entry idt[256];
 
@@ -44,8 +49,23 @@ void interrupt_dispatch(struct idt_ctx* ctx) {
             kernel_panic("Page fault.\n");
             break;
         }
+        case 0x20: { // IRQ0 PIT Timer
+            timer_tick(); 
+            pic_send_eoi(0);
+            break;
+        }
+        case 0x21: { // IRQ1 keyboard 
+            uint8_t scancode = inb(0x60);
+            keyboard_handle_scancode(scancode);
+            pic_send_eoi(1);
+            break;
+        }
         default: {
-            kprintf("Unknown exception %lu at 0x%X\n", ctx->errc, ctx->rip);
+            if (ctx->vector >= 0x20 && ctx->vector <= 0x2F) {
+                pic_send_eoi(ctx->vector - 0x20);
+            } else {
+                kprintf("Unknown exception %lu at 0x%X\n", ctx->errc, ctx->rip);
+            }
             break;
         }
     } 
@@ -89,6 +109,28 @@ extern void isr22();
 extern void isr23();
 extern void isr24();
 extern void isr25();
+extern void isr26();
+extern void isr27();
+extern void isr28();
+extern void isr29();
+extern void isr30();
+extern void isr31();
+extern void isr32();
+extern void isr33();
+extern void isr34();
+extern void isr35();
+extern void isr36();
+extern void isr37();
+extern void isr38();
+extern void isr39();
+extern void isr40();
+extern void isr41();
+extern void isr42();
+extern void isr43();
+extern void isr44();
+extern void isr45();
+extern void isr46();
+extern void isr47();
 
 void idt_init(void) {
     idt_set_gate(0, isr0);
@@ -117,6 +159,28 @@ void idt_init(void) {
     idt_set_gate(23, isr23);
     idt_set_gate(24, isr24);
     idt_set_gate(25, isr25);
+    idt_set_gate(26, isr26);
+    idt_set_gate(27, isr27);
+    idt_set_gate(28, isr28);
+    idt_set_gate(29, isr29);
+    idt_set_gate(30, isr30);
+    idt_set_gate(31, isr31);
+    idt_set_gate(32, isr32);
+    idt_set_gate(33, isr33);
+    idt_set_gate(34, isr34);
+    idt_set_gate(35, isr35);
+    idt_set_gate(36, isr36);
+    idt_set_gate(37, isr37);
+    idt_set_gate(38, isr38);
+    idt_set_gate(39, isr39);
+    idt_set_gate(40, isr40);
+    idt_set_gate(41, isr41);
+    idt_set_gate(42, isr42);
+    idt_set_gate(43, isr43);
+    idt_set_gate(44, isr44);
+    idt_set_gate(45, isr45);
+    idt_set_gate(46, isr46);
+    idt_set_gate(47, isr47);
 
     struct idt_ptr ptr = {
         .limit = sizeof(idt) - 1,

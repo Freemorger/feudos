@@ -21,7 +21,9 @@ void kernel_main() {
     const uint8_t white_on_black = 0x0F;
     vga_clear_screen(white_on_black);
 
-    vga_print("Booting up " KERNEL_NAME " " KERNEL_VER " ...\n", white_on_black);
+    kprintf("Booting up %s %s for %s ...\n", 
+        KERNEL_NAME, KERNEL_VER, KERNEL_ARCH
+    );
 
     arch_init();
 
