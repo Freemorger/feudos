@@ -2,7 +2,7 @@ ASM := nasm
 CC  := x86_64-elf-gcc
 LD  := x86_64-elf-gcc
 
-CFLAGS := -ffreestanding -O2 -Wall -Wextra -mno-red-zone -mcmodel=large -m64 -c -std=gnu23 -Iinclude/
+CFLAGS := -ffreestanding  -O2 -Wall -Wextra -mno-red-zone -mcmodel=large -m64 -c -std=gnu23 -Iinclude/
 LDFLAGS := -ffreestanding -O2 -nostdlib
 
 # Source files
@@ -13,7 +13,7 @@ C_SRCS := $(wildcard kernel/*.c) \
 ASM_SRCS := $(wildcard arch/x86_64/*.s)
 
 # Object files
-C_OBJS := $(C_SRCS:%.c=obj/%.o)
+C_OBJS   := $(C_SRCS:%.c=obj/%.o)
 ASM_OBJS := $(ASM_SRCS:%.s=obj/%.o)
 
 OBJS := $(C_OBJS) $(ASM_OBJS)

@@ -34,6 +34,8 @@ gdt64:
     dq 0                                      ; null descriptor 
 .code_segment: equ $ - gdt64
     dq (1<<43) | (1<<44) | (1<<47) | (1<<53)  ; executable, code, present, long-mode(L bit)
+.data_segment:
+    dq (1<<41) | (1<<44) | (1<<47)   ; writable, present, data segment
 .pointer:
     dw $ - gdt64 - 1
     dq gdt64
@@ -160,7 +162,7 @@ error:
 bits 64
 global long_mode_start
 long_mode_start:
-    mov ax, 0 
+    mov ax, gdt64.data_segment - gdt64 
     mov ss, ax
     mov ds, ax
     mov es, ax

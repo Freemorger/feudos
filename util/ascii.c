@@ -1,3 +1,7 @@
-const char dtoa(char digit) {
-    return (digit <= 9) ? ('0' + digit) : '\0';
+char dtoa(char digit) {
+    if (digit <= 9)
+        return '0' + digit;
+    if (digit <= 15)
+        return 'A' + (digit - 10);
+    return '\0';
 }

@@ -90,25 +90,22 @@ void vga_print(const char* text, uint8_t color) {
     }
 }
 
-static void kprint_int(int num, uint8_t color) {
-    bool minus = num < 0;
-    if (minus) {
-        num = -num;
-    }
-    
-    char buf[11];
+/// Prints unsigned int with specified base; please don't use bases over 16!
+static void kprint_uint(uintmax_t n, uint8_t color, uint8_t base) {
+    if (n == 0) {
+        vga_putc('0', color);
+        return;
+    } 
+
+    char buf[20]; // enough for 64 bit unsigned int in decimal 
 
     int i = 0; 
-    while (num != 0) {
-        int digit = num % 10;
-        num /= 10;
+    while (n != 0) {
+        int digit = n % base;
+        n /= base;
         const char d = dtoa((char)digit);
         buf[i] = d;
         i += 1;
-    }
-
-    if (minus) {
-        vga_putc('-', color);
     }
 
     for (int j = i - 1; j >= 0; j--) {
@@ -116,45 +113,68 @@ static void kprint_int(int num, uint8_t color) {
     }
 }
 
+static void kprint_int(intmax_t num, uint8_t color, uint8_t base) {
+    if (num < 0) {
+        vga_putc('-', color);
+        kprint_uint(-(uintmax_t)num, color, base);
+    } else {
+        kprint_uint((uintmax_t)num, color, base);
+    }
+}
+
 void kprintf(const char* msg, ...) {
     va_list args;
-    const uint8_t white_on_black = 0x0F;
+    const uint8_t color = 0x0F;
 
     va_start(args, msg);
 
-    bool skip = false;
     for (size_t i = 0; msg[i] != '\0'; i++) {
-        if (skip) {
-            skip = false;
+        if (msg[i] != '%') {
+            vga_putc(msg[i], color);
             continue;
         }
 
-        char prev = i == 0 ? 0 : msg[i-1];
-        char cur  = msg[i];
+        i++;                    // consume '%'
+        if (msg[i] == '\0')
+            break;
 
-        if (cur == '%' && prev != '\\') {
-            char next = msg[i+1];
-            if (next == '\0') {
-                break;
-            } 
-            
-            switch (next) {
-                case 'd': {
-                    int num = va_arg(args, int);
-                    kprint_int(num, white_on_black);
-                    break;
-                }
-                case 's': {
-                    const char* str = va_arg(args, const char*);
-                    vga_print(str, white_on_black);
-                    break;
-                }
-                default: 
-                    break;
+        switch (msg[i]) {
+            case 'd': {
+                kprint_int(va_arg(args, int), color, 10);
+                break; 
             }
-            skip = true;
-        } else {
-            vga_putc(cur, white_on_black);
+            case 's': {
+                vga_print(va_arg(args, const char*), color);
+                break;
+            }
+            case 'l': {
+                char ahead = msg[++i];
+                switch (ahead) {
+                    case 'd': {
+                        kprint_int(va_arg(args, long), color, 10);
+                        break;
+                    }
+                    case 'u': {
+                        kprint_uint(va_arg(args, unsigned long), color, 10);
+                        break;
+                    }
+                    default: {
+                        vga_print("%l", color);
+                        vga_putc(ahead, color);
+                        break;
+                    }
+                }
+                break;
+            }
+            case 'X': {
+                kprint_uint(va_arg(args, unsigned long), color, 16);
+                break;
+            }
+            default: {
+                vga_putc('%', color);
+                vga_putc(msg[i], color);
+                break;
+            }
         }
     }
 

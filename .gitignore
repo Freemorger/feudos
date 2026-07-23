@@ -1,4 +1,5 @@
 obj/
 *.iso
 *.bin
-
+isodir/
+!isodir/.gitkeep

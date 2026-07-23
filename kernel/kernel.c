@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include "kernel/kernel.h"
 #include "kernel/vga.h"
+#include "arch/init_arch.h"
 
 #define PANIC_COLOR 0x04
 
@@ -21,6 +22,8 @@ void kernel_main() {
     vga_clear_screen(white_on_black);
 
     vga_print("Booting up " KERNEL_NAME " " KERNEL_VER " ...\n", white_on_black);
+
+    arch_init();
 
     for (;;) {
         __asm__ __volatile__ ("hlt");
