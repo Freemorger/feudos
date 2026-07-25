@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stdbool.h>
-#include "kernel/kernel.h"
+#include "kernel/vga.h"
 
 static bool shift_held = false;
 

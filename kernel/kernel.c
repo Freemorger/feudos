@@ -1,16 +1,24 @@
+#include <stdarg.h>
 #include <stdint.h>
 #include <stddef.h>
 #include "kernel/kernel.h"
+#include "kernel/log.h"
+#include "kernel/timer.h"
 #include "kernel/vga.h"
 #include "arch/init_arch.h"
-
-#define PANIC_COLOR 0x04
+#include "util/vga_colors.h"
 
 [[noreturn]]
-void kernel_panic(const char *const msg) {
+void kernel_panic(const char* msg, ...) {
     vga_print("Kernel panic!\n", PANIC_COLOR);
-    vga_putc('\t', 0);
-    vga_print(msg, PANIC_COLOR);
+    kprintf("\t%k", PANIC_COLOR);
+
+    va_list args;
+    va_start(args, msg);
+    
+    kvprintf(msg, args);
+
+    va_end(args);
 
     for (;;) {
         __asm__ __volatile__("cli; hlt");
@@ -18,10 +26,9 @@ void kernel_panic(const char *const msg) {
 }
 
 void kernel_main() {
-    const uint8_t white_on_black = 0x0F;
-    vga_clear_screen(white_on_black);
+    vga_clear_screen(DEF_TEXT_COL);
 
-    kprintf("Booting up %s %s for %s ...\n", 
+    klog(NONE, "Booting up %s %s for %s ...\n", 
         KERNEL_NAME, KERNEL_VER, KERNEL_ARCH
     );
 

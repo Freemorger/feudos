@@ -2,10 +2,11 @@
 #include "arch/x86_64/pic.h"
 #include "kernel/timer.h"
 #include "kernel/vga.h"
+#include "kernel/log.h"
 
 void arch_init() {
     idt_init();
-    kprintf("[OK] Initialized IDT.\n");
+    klog(INFO, "Initialized IDT.\n");
 
     pic_remap();
     pit_init(TIMER_FREQ);
@@ -13,7 +14,7 @@ void arch_init() {
 
     pic_clear_mask(0);
     pic_clear_mask(1);
-    kprintf("[OK] PIC initialization done.\n");
+    klog(INFO, "PIC initialization done.\n");
     __asm__ __volatile__("sti");
-    kprintf("[OK] Interrupts enabled.\n");
+    klog(INFO, "Interrupts enabled.\n");
 }

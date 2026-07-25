@@ -23,6 +23,11 @@ void vga_clear_screen(uint8_t color) {
 static uint16_t cursor_row = 0;
 static uint16_t cursor_column = 0;
 
+static uint8_t text_color = 0x0F; // white on black by default 
+void vga_change_text_color(uint8_t col) {
+    text_color = col;
+}
+
 /// Changes VGA displayed cursor pos
 void vga_set_cursor(uint16_t x, uint16_t y) {
     uint16_t pos = y * VGA_WIDTH + x;
@@ -162,15 +167,10 @@ static void kprint_int(intmax_t num, uint8_t color, uint8_t base) {
     }
 }
 
-void kprintf(const char* msg, ...) {
-    va_list args;
-    const uint8_t color = 0x0F;
-
-    va_start(args, msg);
-
+void kvprintf(const char *msg, va_list args) {
     for (size_t i = 0; msg[i] != '\0'; i++) {
         if (msg[i] != '%') {
-            vga_putc(msg[i], color);
+            vga_putc(msg[i], text_color);
             continue;
         }
 
@@ -180,48 +180,60 @@ void kprintf(const char* msg, ...) {
 
         switch (msg[i]) {
             case 'd': {
-                kprint_int(va_arg(args, int), color, 10);
+                kprint_int(va_arg(args, int), text_color, 10);
                 break; 
             }
             case 'c': {
                 char c = (char)va_arg(args, int);
-                vga_putc(c, color);
+                vga_putc(c, text_color);
                 break;
             }
             case 's': {
-                vga_print(va_arg(args, const char*), color);
+                vga_print(va_arg(args, const char*), text_color);
                 break;
             }
             case 'l': {
                 char ahead = msg[++i];
                 switch (ahead) {
                     case 'd': {
-                        kprint_int(va_arg(args, long), color, 10);
+                        kprint_int(va_arg(args, long), text_color, 10);
                         break;
                     }
                     case 'u': {
-                        kprint_uint(va_arg(args, unsigned long), color, 10);
+                        kprint_uint(va_arg(args, unsigned long), text_color, 10);
                         break;
                     }
                     default: {
-                        vga_print("%l", color);
-                        vga_putc(ahead, color);
+                        vga_print("%l", text_color);
+                        vga_putc(ahead, text_color);
                         break;
                     }
                 }
                 break;
             }
             case 'X': {
-                kprint_uint(va_arg(args, unsigned long), color, 16);
+                kprint_uint(va_arg(args, unsigned long), text_color, 16);
+                break;
+            }
+            case 'k': { // custom fmt specifier for color
+                vga_change_text_color((uint8_t)va_arg(args, int));
                 break;
             }
             default: {
-                vga_putc('%', color);
-                vga_putc(msg[i], color);
+                vga_putc('%', text_color);
+                vga_putc(msg[i], text_color);
                 break;
             }
         }
     }
+}
+
+void kprintf(const char* msg, ...) {
+    va_list args;
+
+    va_start(args, msg);
+
+    kvprintf(msg, args);
 
     va_end(args);
 }

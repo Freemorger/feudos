@@ -10,10 +10,11 @@
 volatile struct idt_entry idt[256];
 
 #define KPANIC_DBG(ctx) \
-    kprintf("RIP    = 0x%X\n", (ctx)->rip);\
-    kprintf("CS     = 0x%X\n", (ctx)->cs);\
-    kprintf("RFLAGS = 0x%X\n", (ctx)->rflags)
-
+    do {\
+        kprintf("RIP    = 0x%X\n", (ctx)->rip);\
+        kprintf("CS     = 0x%X\n", (ctx)->cs);\
+        kprintf("RFLAGS = 0x%X\n", (ctx)->rflags);\
+    } while (0)
 
 void interrupt_dispatch(struct idt_ctx* ctx) {
     switch (ctx->vector) {

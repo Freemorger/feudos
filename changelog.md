@@ -1,8 +1,9 @@
-v0.0.3:
-- updated initial boot up message
-- some PIC
-- `%c` fmt specifiers for `kprintf`
-- IRQs for keyboard and timer
-- basic keyboard handling
-- somewhat supporting `\b` in `vga_putc` now
-- VGA hardware cursor is now somewhat movable
+v0.0.4:
+- made `kernel_panic` work via `kprintf`
+- `vga_change_text_color`
+- `%k` fmt specifier (changes color to specified in va args)
+- `include/utils/vga_colors.h` header with vga colors
+- `kvprintf` (`kprintf` but with va_list as second param)
+- `KPANIC_DBG` macro is now do-while.
+- basic logging (`klog`)
+- fixed timer impl
