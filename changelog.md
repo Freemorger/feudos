@@ -1,9 +1,12 @@
-v0.0.4:
-- made `kernel_panic` work via `kprintf`
-- `vga_change_text_color`
-- `%k` fmt specifier (changes color to specified in va args)
-- `include/utils/vga_colors.h` header with vga colors
-- `kvprintf` (`kprintf` but with va_list as second param)
-- `KPANIC_DBG` macro is now do-while.
-- basic logging (`klog`)
-- fixed timer impl
+v0.0.5:
+- circular keyboard buf 
+- `kbd_readline`
+- `util/str.h` (for some str helpers, including):
+    - `streq`
+    - `strl`
+    - `isalnum`
+    - `strfle`
+    - `strfnl`
+- `util/memops.h` (`kmemcpy`)
+- SSE initialization for x86_64
+- ksh shell

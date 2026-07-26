@@ -27,7 +27,7 @@ void interrupt_dispatch(struct idt_ctx* ctx) {
             kprintf("[DEBUG] Reached breakpoint at RIP: 0x%X\n", ctx->rip);
             break;
         } 
-        case 0x06: {
+        case 0x06: { // #UD illegal instruction
             KPANIC_DBG(ctx);
             kernel_panic("Illegal instruction.");
             break;
@@ -57,7 +57,7 @@ void interrupt_dispatch(struct idt_ctx* ctx) {
         }
         case 0x21: { // IRQ1 keyboard 
             uint8_t scancode = inb(0x60);
-            keyboard_handle_scancode(scancode);
+            kbd_handle_scancode(scancode);
             pic_send_eoi(1);
             break;
         }

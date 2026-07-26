@@ -3,6 +3,7 @@
 #include "kernel/timer.h"
 #include "kernel/vga.h"
 #include "kernel/log.h"
+#include "arch/x86_64/sse.h"
 
 void arch_init() {
     idt_init();
@@ -17,4 +18,7 @@ void arch_init() {
     klog(INFO, "PIC initialization done.\n");
     __asm__ __volatile__("sti");
     klog(INFO, "Interrupts enabled.\n");
+
+    init_sse();
+    klog(INFO, "SSE enabled.\n");
 }

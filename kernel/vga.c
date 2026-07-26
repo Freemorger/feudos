@@ -183,6 +183,10 @@ void kvprintf(const char *msg, va_list args) {
                 kprint_int(va_arg(args, int), text_color, 10);
                 break; 
             }
+            case 'u': {
+                kprint_uint(va_arg(args, unsigned int), text_color, 10);
+                break;
+            }
             case 'c': {
                 char c = (char)va_arg(args, int);
                 vga_putc(c, text_color);

@@ -1,9 +1,6 @@
 # now
-- kbd buf 
-- maybe normal scrolling 
-- very simple shell 
-# next steps
 - switch to limine
+# next steps
 - paging
 - kernel memory management
 - framebuffer and fonts

@@ -2,6 +2,9 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "kernel/kernel.h"
+#include "kernel/keyboard.h"
+#include "kernel/ksh/ksh.h"
+#include "kernel/ksh/handlers.h"
 #include "kernel/log.h"
 #include "kernel/timer.h"
 #include "kernel/vga.h"
@@ -33,6 +36,8 @@ void kernel_main() {
     );
 
     arch_init();
+
+    ksh_run();
 
     for (;;) {
         __asm__ __volatile__ ("hlt");

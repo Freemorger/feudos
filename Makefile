@@ -2,11 +2,12 @@ ASM := nasm
 CC  := x86_64-elf-gcc
 LD  := x86_64-elf-gcc
 
-CFLAGS := -ffreestanding  -O2 -Wall -Wextra -mno-red-zone -mcmodel=large -m64 -c -std=gnu23 -Iinclude/
+CFLAGS := -ffreestanding  -O2 -Wall -Wextra -mno-red-zone -mcmodel=large -fno-stack-protector -m64 -c -std=gnu23 -Iinclude/
 LDFLAGS := -ffreestanding -O2 -nostdlib
 
 # Source files
 C_SRCS := $(wildcard kernel/*.c) \
+          $(wildcard kernel/ksh/*.c) \
           $(wildcard arch/x86_64/*.c) \
           $(wildcard util/*.c)
 
