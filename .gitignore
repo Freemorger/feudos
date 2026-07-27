@@ -3,3 +3,4 @@ obj/
 *.bin
 isodir/
 !isodir/.gitkeep
+limine/

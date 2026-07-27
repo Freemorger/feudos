@@ -29,6 +29,7 @@ void kernel_panic(const char* msg, ...) {
 }
 
 void kernel_main() {
+    vga_init();
     vga_clear_screen(DEF_TEXT_COL);
 
     klog(NONE, "Booting up %s %s for %s ...\n", 

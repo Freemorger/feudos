@@ -1,12 +1,2 @@
-v0.0.5:
-- circular keyboard buf 
-- `kbd_readline`
-- `util/str.h` (for some str helpers, including):
-    - `streq`
-    - `strl`
-    - `isalnum`
-    - `strfle`
-    - `strfnl`
-- `util/memops.h` (`kmemcpy`)
-- SSE initialization for x86_64
-- ksh shell
+v0.0.6:
+- slopped switch to limine bc its pain in ass otherwise

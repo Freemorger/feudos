@@ -1,11 +1,15 @@
 #include "arch/x86_64/idt.h"
 #include "arch/x86_64/pic.h"
+#include "arch/x86_64/gdt.h"
 #include "kernel/timer.h"
 #include "kernel/vga.h"
 #include "kernel/log.h"
 #include "arch/x86_64/sse.h"
 
 void arch_init() {
+    gdt_init(); 
+    klog(INFO, "Initialized GDT.\n");
+
     idt_init();
     klog(INFO, "Initialized IDT.\n");
 

@@ -2,12 +2,16 @@ ASM := nasm
 CC  := x86_64-elf-gcc
 LD  := x86_64-elf-gcc
 
-CFLAGS := -ffreestanding  -O2 -Wall -Wextra -mno-red-zone -mcmodel=large -fno-stack-protector -m64 -c -std=gnu23 -Iinclude/
-LDFLAGS := -ffreestanding -O2 -nostdlib
+CFLAGS := -ffreestanding -O2 -Wall -Wextra -mno-red-zone -mcmodel=large \
+          -fno-pic -fno-pie -m64 -mno-80387 -mno-mmx -mno-sse -mno-sse2 \
+          -c -std=gnu23 -Iinclude/
+LDFLAGS := -ffreestanding -O2 -nostdlib -static -no-pie -z max-page-size=0x1000
+
+LIMINE_BRANCH := v11.x-binary
 
 # Source files
 C_SRCS := $(wildcard kernel/*.c) \
-          $(wildcard kernel/ksh/*.c) \
+		  $(wildcard kernel/ksh/*.c) \
           $(wildcard arch/x86_64/*.c) \
           $(wildcard util/*.c)
 
@@ -21,29 +25,40 @@ OBJS := $(C_OBJS) $(ASM_OBJS)
 
 all: feudos.bin
 
-# C compilation
 obj/%.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $< -o $@
 
-# Assembly compilation
 obj/%.o: %.s
 	mkdir -p $(dir $@)
 	$(ASM) -f elf64 $< -o $@
 
-# Link kernel
 feudos.bin: $(OBJS) linker.ld
 	$(LD) -T linker.ld -o $@ $(LDFLAGS) $(OBJS) -lgcc
 
-# ISO
-iso: feudos.bin grub.cfg
-	mkdir -p isodir/boot/grub
+limine:
+	git clone https://github.com/Limine-Bootloader/Limine.git --branch=$(LIMINE_BRANCH) --depth=1 $@
+
+limine/limine: limine
+	$(MAKE) -C limine
+
+iso: feudos.bin limine.conf limine/limine
+	rm -rf isodir
+	mkdir -p isodir/boot/limine
+	mkdir -p isodir/EFI/BOOT
 	cp feudos.bin isodir/boot/feudos.bin
-	cp grub.cfg isodir/boot/grub/grub.cfg
-	grub-mkrescue -o feudos.iso isodir
+	cp limine.conf isodir/boot/limine/
+	cp limine/limine-bios.sys limine/limine-bios-cd.bin limine/limine-uefi-cd.bin isodir/boot/limine/
+	cp limine/BOOTX64.EFI isodir/EFI/BOOT/
+	xorriso -as mkisofs -R -r -J -b boot/limine/limine-bios-cd.bin \
+		-no-emul-boot -boot-load-size 4 -boot-info-table -hfsplus \
+		-apm-block-size 2048 --efi-boot boot/limine/limine-uefi-cd.bin \
+		-efi-boot-part --efi-boot-image --protective-msdos-label \
+		isodir -o feudos.iso
+	./limine/limine bios-install feudos.iso
 
 run-iso: iso
 	qemu-system-x86_64 -cdrom feudos.iso
 
 clean:
-	rm -rf obj feudos.bin feudos.iso isodir
+	rm -rf obj feudos.bin feudos.iso isodir limine

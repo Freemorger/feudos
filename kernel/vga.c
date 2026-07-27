@@ -5,9 +5,15 @@
 #include "arch/x86_64/io.h"
 #include "util/ascii_util.h"
 
-static volatile uint16_t* const VGA_MEMORY = (uint16_t*) 0xB8000;
+extern uint64_t hhdm_offset;
+
+static volatile uint16_t* VGA_MEMORY;
 static const int VGA_WIDTH  = 80;
 static const int VGA_HEIGHT = 25;
+
+void vga_init(void) {
+    VGA_MEMORY = (volatile uint16_t*)(hhdm_offset + 0xB8000);
+}
 
 static inline uint16_t vga_entry(uint8_t c, uint8_t color) {
     return (uint16_t)c | (uint16_t)(color << 8);

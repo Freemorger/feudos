@@ -1,7 +1,7 @@
 #pragma once
 
 #define KERNEL_NAME "FeudOS kernel"
-#define KERNEL_VER  "v0.0.5"
+#define KERNEL_VER  "v0.0.6"
 
 #if defined(__x86_64__)
     #define KERNEL_ARCH "x86_64" 
