@@ -13,81 +13,128 @@ Currently written in C, a bit of nasm. Uses `gnu23` C standard in kernel.
     - [macOS](#macos)
 - [Get & build it](#get--build-it)
 
-## Build prerequisites 
-To build and run FeudOS, you would need:
-- `make` 
-- `x86_64-elf-gcc` cross compiler (ver. 15 or newer) 
-- `nasm` assembler
-- `grub-mkrescue`, for ISO generation
-- `xorriso` 
+## Build prerequisites
+
+To build and run FeudOS, you'll need:
+
+* `make`
+* `x86_64-elf-gcc` cross compiler (version 15 or newer)
+* `nasm`
+* `limine`
+* `xorriso`
+
 Optional:
-- `qemu-system-x86_64` (to run ISO in VM)
-- `x86_64-elf-binutils` (for debugging)
-### Getting prerequisites on different OS'es
-#### Debian-based GNU/Linux (Debian, Ubuntu, Mint, PopOS, etc.)
+
+* `qemu-system-x86_64` (to run the ISO in a VM)
+* `x86_64-elf-binutils` (for debugging)
+* `tigervnc` (if you want to run qemu with VNC, would be useful if you're on 
+wayland - see `run_qemu_wayland.sh` comments)
+
+### Getting prerequisites on different operating systems
+
+#### Debian-based GNU/Linux (Debian, Ubuntu, Mint, Pop!_OS, etc.)
+
 ```sh
 sudo apt update
 sudo apt install \
     build-essential \
     nasm \
-    grub-pc-bin \
     xorriso \
-    qemu-system-x86
+    qemu-system-x86 \
+    git
 ```
-Then build the cross compiler (`x86_64-elf-gcc`) by yourself of get a binary from third-party source.
+
+Build `x86_64-elf-gcc` yourself or get a binary from a third-party source.
+
+Build Limine:
+
+```sh
+git clone https://github.com/limine-bootloader/limine.git
+cd limine
+make
+# Optionally install limine somewhere in your PATH.
+```
+
 #### Fedora GNU/Linux
+
 ```sh
 sudo dnf install \
     make \
     gcc \
     nasm \
-    grub2-tools \
     xorriso \
-    qemu-system-x86
+    qemu-system-x86 \
+    git
 ```
-Again, build the cross compiler by yourself or get it somewhere.. 
-#### Arch-based GNU/Linux (Arch, Manjaro, EndeavourOS, CachyOS, Artix, etc)
+
+Again, build the cross compiler yourself or get it from a third-party source.
+
+Build Limine the same way as above.
+
+#### Arch-based GNU/Linux (Arch, Manjaro, EndeavourOS, CachyOS, Artix, etc.)
+
 ```sh
 sudo pacman -S --needed \
     base-devel \
     nasm \
-    grub \
     xorriso \
-    qemu-desktop
+    qemu-desktop \
+    git
 ```
-You can build cross compiler with AUR recipe `x86_64-elf-gcc` or from source.    
-Example for yay:
+
+You can build the cross compiler using the AUR package `x86_64-elf-gcc` or from source.
+
+Example with `yay`:
+
 ```sh
-yay -S x86_64-elf-gcc 
-# yay -S x86_64-elf-binutils # if needed 
+yay -S x86_64-elf-gcc
+# yay -S x86_64-elf-binutils # if needed
 ```
-#### FreeBSD 
-```sh 
+
+Limine is also available in the AUR:
+
+```sh
+yay -S limine
+```
+
+#### FreeBSD
+
+```sh
 pkg install \
     gmake \
     nasm \
-    grub2 \
     xorriso \
-    qemu
+    qemu \
+    git
 ```
-Build cross compiler or get it from 3rd party.   
-Run build with `gmake` instead of `make`.
-#### macOS 
-```sh 
+
+Build the cross compiler and Limine yourself (or get them from a third-party source).
+
+Run the build with `gmake` instead of `make`.
+
+#### macOS
+
+```sh
 brew install \
     make \
     nasm \
     xorriso \
-    qemu
+    qemu \
+    git
 ```
-GRUB:
-```sh 
-brew install --cask grub2
-```
-Build x86_64-elf-binutils and x86_64-elf-gcc manually, or install from a tap that provides an ELF cross toolchain.
-## Get & build it 
+
+Build `x86_64-elf-binutils`, `x86_64-elf-gcc`, and Limine manually, or install them from a tap that provides an ELF cross toolchain.
+
+## Get & build it
+
 ```sh
 git clone https://github.com/Freemorger/feudos
-make # build ISO
-make run-iso # build and run ISO in qemu VM
+cd feudos
+
+make      # Build the ISO
+make run-iso # Build and run the ISO in QEMU
 ```
+> [!NOTE]
+> Wayland users might encounter rendering issues with default QEMU screen. 
+> See `run_qemu_wayland.sh` script comments to learn more
+

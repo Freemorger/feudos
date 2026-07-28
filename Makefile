@@ -61,4 +61,4 @@ run-iso: iso
 	qemu-system-x86_64 -cdrom feudos.iso
 
 clean:
-	rm -rf obj feudos.bin feudos.iso isodir limine
+	rm -rf obj feudos.bin feudos.iso isodir #limine

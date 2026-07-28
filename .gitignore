@@ -4,3 +4,4 @@ obj/
 isodir/
 !isodir/.gitkeep
 limine/
+qemu.log

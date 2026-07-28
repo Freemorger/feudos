@@ -13,8 +13,7 @@
 
 [[noreturn]]
 void kernel_panic(const char* msg, ...) {
-    vga_print("Kernel panic!\n", PANIC_COLOR);
-    kprintf("\t%k", PANIC_COLOR);
+    kprintf("%kKernel panic!\n\t", PANIC_COLOR);
 
     va_list args;
     va_start(args, msg);

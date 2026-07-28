@@ -3,7 +3,7 @@
 extern uint64_t kernel_phys_base;
 extern uint64_t kernel_virt_base;
 
-static uint64_t pt_scratch[4][512] __attribute__((aligned(4096)));
+static uint64_t pt_scratch[4][512] [[gnu::aligned(4096)]];
 static int pt_scratch_used = 0;
 
 static inline uint64_t v2p(uint64_t vaddr) {

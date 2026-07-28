@@ -74,6 +74,9 @@ void ksh_run() {
 
 bool ksh_exec(char* cmd) {
     char* args_start = strfnl(cmd, ' ');
+    if (args_start == NULL) {
+        args_start = "";
+    }
     char* name_end   = strfle(cmd, ' ');
     *(name_end + 1)  = '\0';
 

@@ -22,6 +22,9 @@ want it to eventually be merged into the kernel, I'd suggest opening an issue fi
 * Use the increment/decrement operators only in `for` loops.
 * Keep lines at 80 characters or fewer.
 * If a function name is an uncommon abbreviation, write a doc comment (`///`) explaining what it means.
+* Tab is 4 width 
+* When an expression is wrapped across multiple lines due to parentheses, 
+place both the opening and closing parenthesis on their own lines.
 
 ## LLM standpoint
 
